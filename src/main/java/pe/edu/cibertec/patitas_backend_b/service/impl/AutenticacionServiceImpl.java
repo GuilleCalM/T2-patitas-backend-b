@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
@@ -63,6 +64,11 @@ public class AutenticacionServiceImpl implements AutenticacionService {
         Resource resource = resourceLoader.getResource("classpath:auditoria.txt");
         Path rutaArchivo = Paths.get(resource.getURI());
 
+        //Validar que el archivo existe, y sino se crea
+        if (!Files.exists(rutaArchivo)) {
+            Files.createFile(rutaArchivo);
+        }
+
         try (BufferedWriter bw = Files.newBufferedWriter(rutaArchivo, StandardOpenOption.APPEND)) {
 
             // definir fecha
@@ -74,16 +80,15 @@ public class AutenticacionServiceImpl implements AutenticacionService {
             sb.append(";");
             sb.append(logoutRequestDTO.numeroDocumento());
             sb.append(";");
-            sb.append(fechaLogout);
+            sb.append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(fechaLogout));
 
             // escribir linea
             bw.write(sb.toString());
             bw.newLine();
-            System.out.println(sb.toString());
+            System.out.println("Auditoría registrada: " + sb);
 
         } catch (IOException e) {
 
-            fechaLogout = null;
             throw new IOException(e);
 
         }

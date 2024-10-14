@@ -49,8 +49,6 @@ public class AutenticacionController {
     public LogoutResponseDTO logout(@RequestBody LogoutRequestDTO logoutRequestDTO) {
 
         try {
-
-            Thread.sleep(Duration.ofSeconds(5));
             Date fechaLogout = autenticacionService.cerrarSesionUsuario(logoutRequestDTO);
             System.out.println("Respuesta backend: " + fechaLogout);
 
